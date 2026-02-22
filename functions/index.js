@@ -80,3 +80,40 @@ export const submitApp = onRequest(async (req, res) => {
     }
   }
 });
+
+/**
+ * HTTP function to fetch all submitted apps.
+ * Usage: GET https://us-central1-findyoursecondbrain.cloudfunctions.net/getApps
+ * No authentication required - accessible to all users
+ */
+export const getApps = onRequest(async (req, res) => {
+  // Only allow GET requests
+  if (req.method !== 'GET') {
+    res.status(405).json({ error: 'Method not allowed' });
+    return;
+  }
+
+  try {
+    // Query all apps from Firestore, ordered by creation date (newest first)
+    const appsSnapshot = await db.collection("apps")
+      .orderBy("createdAt", "desc")
+      .get();
+
+    const apps = [];
+    appsSnapshot.forEach((doc) => {
+      apps.push({
+        id: doc.id,
+        ...doc.data()
+      });
+    });
+
+    res.status(200).json({
+      success: true,
+      apps: apps,
+      total: apps.length
+    });
+  } catch (error) {
+    console.error("Error fetching apps:", error);
+    res.status(500).json({ error: 'An error occurred while fetching apps.' });
+  }
+});
