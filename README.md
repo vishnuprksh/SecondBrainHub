@@ -9,7 +9,7 @@ A community-driven directory of second brain and personal knowledge management a
 - **Browse & Search** — Discover second brain apps with search and category filters
 - **Submit Apps** — Register new second brain tools for the community
 - **Rate & Review** — Rate apps (1–5 stars) and leave comments
-- **Google Auth** — Sign in with Google to submit, rate, and comment
+- **Guest Access** — Continue as guest to submit, rate, and comment
 - **Real-time Updates** — Powered by Firestore for instant data sync
 
 ## Tech Stack

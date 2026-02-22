@@ -163,7 +163,7 @@ export default function EditAppModal({ app, isOpen, onClose, onUpdated }) {
       <AuthModal
         isOpen={authModal}
         onClose={() => setAuthModal(false)}
-        message="Sign in with Google to edit this app."
+        message="Continue as guest to edit this app."
       />
 
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">

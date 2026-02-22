@@ -93,7 +93,7 @@ export default function AppDetailPage() {
 
   const handleRate = async (rating) => {
     if (!user) {
-      setAuthModal({ open: true, message: 'Sign in with Google to rate this app.' });
+      setAuthModal({ open: true, message: 'Please sign in to rate this app.' });
       return;
     }
 
@@ -150,7 +150,7 @@ export default function AppDetailPage() {
   const handleComment = async (e) => {
     e.preventDefault();
     if (!user) {
-      setAuthModal({ open: true, message: 'Sign in with Google to leave a comment.' });
+      setAuthModal({ open: true, message: 'Continue as guest to leave a comment.' });
       return;
     }
     if (!newComment.trim()) return;
@@ -190,7 +190,7 @@ export default function AppDetailPage() {
 
   const handleEditClick = () => {
     if (!user) {
-      setAuthModal({ open: true, message: 'Sign in with Google to edit this app.' });
+      setAuthModal({ open: true, message: 'Continue as guest to edit this app.' });
       return;
     }
     setEditModal(true);
@@ -361,7 +361,9 @@ export default function AppDetailPage() {
 
       {/* Rate this app */}
       <div className="bg-white rounded-2xl border border-gray-200 p-6 mt-6">
-        <h2 className="text-lg font-bold text-gray-900 mb-3">Rate this app</h2>
+        <h2 className="text-lg font-bold text-gray-900 mb-3">
+          {userRating > 0 ? 'Your Rating' : 'Rate this app'}
+        </h2>
         <div className="flex items-center gap-4">
           <StarRating
             rating={userRating}
@@ -370,8 +372,8 @@ export default function AppDetailPage() {
             onRate={handleRate}
           />
           {userRating > 0 && (
-            <span className="text-sm text-gray-500">
-              Your rating: {userRating}/5
+            <span className="text-sm font-medium text-brand-600">
+              You rated this {userRating}/5
             </span>
           )}
         </div>

@@ -101,7 +101,7 @@ export default function SubmitPage() {
       <AuthModal
         isOpen={authModal}
         onClose={() => setAuthModal(false)}
-        message="Sign in with Google to submit a new second brain app."
+        message="Continue as guest to submit a new second brain app."
       />
 
       <div className="mb-8">
