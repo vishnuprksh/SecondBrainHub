@@ -82,3 +82,7 @@ jspm_packages/
 
 # DynamoDB Local files
 .dynamodb/
+
+# Test and token scripts
+get-token.js
+test-function.js
