@@ -5,7 +5,7 @@ import { db } from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
 import AuthModal from '../components/AuthModal';
 import toast from 'react-hot-toast';
-import { HiOutlinePlus, HiOutlinePhotograph, HiOutlineGlobe } from 'react-icons/hi';
+import { HiOutlinePlus, HiOutlineGlobe } from 'react-icons/hi';
 
 const CATEGORIES = ['Note-taking', 'PKM', 'Task Management', 'Whiteboard', 'Writing', 'All-in-one', 'Other'];
 const PRICING_OPTIONS = ['Free', 'Freemium', 'Paid'];
@@ -20,7 +20,6 @@ export default function SubmitPage() {
     name: '',
     description: '',
     websiteUrl: '',
-    logoUrl: '',
     category: 'Note-taking',
     pricing: 'Free',
   });
@@ -48,7 +47,6 @@ export default function SubmitPage() {
         name: form.name.trim(),
         description: form.description.trim(),
         websiteUrl: form.websiteUrl.trim(),
-        logoUrl: form.logoUrl.trim(),
         category: form.category,
         pricing: form.pricing,
         ratingSum: 0,
@@ -134,35 +132,6 @@ export default function SubmitPage() {
             placeholder="https://example.com"
             className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-400 transition placeholder:text-gray-400"
           />
-        </div>
-
-        {/* Logo URL */}
-        <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-            <span className="inline-flex items-center gap-1.5">
-              <HiOutlinePhotograph size={14} />
-              Logo URL
-            </span>
-          </label>
-          <input
-            type="url"
-            name="logoUrl"
-            value={form.logoUrl}
-            onChange={handleChange}
-            placeholder="https://example.com/logo.png"
-            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-400 transition placeholder:text-gray-400"
-          />
-          {form.logoUrl && (
-            <div className="mt-2 flex items-center gap-3">
-              <img
-                src={form.logoUrl}
-                alt="Preview"
-                className="w-10 h-10 rounded-lg object-cover bg-gray-100"
-                onError={(e) => (e.target.style.display = 'none')}
-              />
-              <span className="text-xs text-gray-400">Logo preview</span>
-            </div>
-          )}
         </div>
 
         {/* Category & Pricing row */}
