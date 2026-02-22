@@ -251,6 +251,54 @@ export default function AppDetailPage() {
         Back to all apps
       </Link>
 
+      {/* Hero / Webframe */}
+      <div className="mb-8 group">
+        <div className="bg-gray-900 border border-gray-700/50 rounded-2xl overflow-hidden shadow-2xl">
+          {/* Mock Browser Header */}
+          <div className="bg-gray-800 border-b border-gray-700 px-4 py-3 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-red-500/50" />
+              <div className="w-3 h-3 rounded-full bg-amber-500/50" />
+              <div className="w-3 h-3 rounded-full bg-emerald-500/50" />
+            </div>
+            <div className="flex-1 max-w-md mx-4 bg-gray-950/50 border border-gray-700/50 rounded-lg px-3 py-1 text-xs text-gray-400 truncate text-center">
+              {app.websiteUrl ? app.websiteUrl.replace('https://', '') : 'No URL provided'}
+            </div>
+            <div className="w-16" /> {/* Spacer */}
+          </div>
+
+          {/* Screenshot preview */}
+          <div className="aspect-video bg-gray-950 relative">
+            {app.websiteUrl ? (
+              <img
+                src={`https://api.microlink.io/?url=${encodeURIComponent(app.websiteUrl)}&screenshot=true&embed=screenshot.url&viewport.width=1920&viewport.height=1080`}
+                alt={`${app.name} preview`}
+                className="w-full h-full object-cover object-top"
+                loading="eager"
+              />
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center text-gray-700">
+                <HiOutlineExternalLink size={60} />
+              </div>
+            )}
+            
+            {/* View live site button overlay */}
+            {app.websiteUrl && (
+              <div className="absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-gray-950/80 to-transparent flex justify-center translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                <a
+                  href={app.websiteUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-brand-600 hover:bg-brand-700 text-white font-bold px-8 py-3 rounded-xl shadow-lg transition-all transform hover:scale-105"
+                >
+                  Visit Live Website
+                </a>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
       {/* Header */}
       <div className="bg-gray-900 rounded-2xl border border-gray-700/50 p-6 sm:p-8">
         <div className="flex items-start gap-5">

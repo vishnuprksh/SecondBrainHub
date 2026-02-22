@@ -26,16 +26,46 @@ export default function AppCard({ app }) {
   return (
     <Link
       to={`/app/${app.id}`}
-      className="group block bg-gray-900 rounded-2xl border border-gray-700/50 hover:border-brand-500/60 hover:shadow-lg hover:shadow-brand-900/20 transition-all duration-200 overflow-hidden"
+      className="group block bg-gray-900 rounded-2xl border border-gray-700/50 hover:border-brand-500/60 hover:shadow-lg hover:shadow-brand-900/20 transition-all duration-300 overflow-hidden"
     >
-      <div className="p-5">
+      {/* Website Preview / Webframe */}
+      <div className="h-44 w-full bg-gray-950 relative overflow-hidden group-hover:bg-gray-800 transition-colors">
+        {/* Mock Browser Header */}
+        <div className="absolute top-0 left-0 right-0 h-6 bg-gray-800/80 backdrop-blur-sm border-b border-gray-700/30 flex items-center px-3 gap-1.5 z-10 transition-colors group-hover:bg-gray-700/80">
+          <div className="w-1.5 h-1.5 rounded-full bg-red-500/50" />
+          <div className="w-1.5 h-1.5 rounded-full bg-amber-500/50" />
+          <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/50" />
+          <div className="ml-2 flex-1 bg-gray-900/50 rounded h-3.5 flex items-center px-2">
+            <div className="w-20 h-1.5 bg-gray-700/50 rounded-full" />
+          </div>
+        </div>
+
+        {app.websiteUrl ? (
+          <img
+            src={`https://api.microlink.io/?url=${encodeURIComponent(app.websiteUrl)}&screenshot=true&embed=screenshot.url&viewport.width=1280&viewport.height=800`}
+            alt={`${app.name} preview`}
+            className="w-full h-full object-cover object-top opacity-50 group-hover:opacity-100 transition-opacity duration-700 ease-in-out scale-100 group-hover:scale-105"
+            loading="lazy"
+            onError={(e) => {
+              e.target.style.display = 'none';
+              e.target.nextSibling.style.display = 'flex';
+            }}
+          />
+        ) : null}
+        <div className="absolute inset-0 flex items-center justify-center text-gray-800 hidden">
+           <HiOutlineExternalLink size={40} />
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent opacity-100 group-hover:opacity-40 transition-opacity" />
+      </div>
+
+      <div className="p-5 relative -mt-6">
         {/* Header */}
         <div className="flex items-start gap-4">
           {app.logoUrl ? (
             <img
               src={app.logoUrl}
               alt={app.name}
-              className="w-14 h-14 rounded-xl object-cover bg-gray-800 shrink-0"
+              className="w-14 h-14 rounded-xl object-cover bg-gray-950 ring-4 ring-gray-900 shrink-0"
               onError={(e) => {
                 e.target.style.display = 'none';
                 e.target.nextSibling.style.display = 'flex';
@@ -43,7 +73,7 @@ export default function AppCard({ app }) {
             />
           ) : null}
           <div
-            className={`w-14 h-14 rounded-xl bg-brand-900/40 shrink-0 items-center justify-center text-brand-400 font-bold text-xl ${app.logoUrl ? 'hidden' : 'flex'}`}
+            className={`w-14 h-14 rounded-xl bg-brand-900/40 ring-4 ring-gray-900 shrink-0 items-center justify-center text-brand-400 font-bold text-xl ${app.logoUrl ? 'hidden' : 'flex'}`}
           >
             {app.name?.charAt(0)?.toUpperCase()}
           </div>

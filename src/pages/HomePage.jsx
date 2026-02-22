@@ -62,10 +62,6 @@ export default function HomePage() {
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
       {/* Hero */}
       <div className="text-center mb-10">
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-100 mb-3">
-          Discover Your Perfect{' '}
-          <span className="text-brand-400">Second Brain</span>
-        </h1>
         <p className="text-gray-400 text-base sm:text-lg max-w-2xl mx-auto">
           A community-driven directory of the best personal knowledge management tools. 
           Find, rate, and review apps that help you think better.
