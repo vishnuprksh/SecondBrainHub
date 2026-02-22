@@ -2,6 +2,7 @@ import { onRequest, HttpsError } from "firebase-functions/v1/https";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import { initializeApp } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
+import { onSchedule } from "firebase-functions/v2/scheduler";
 
 // Initialize Firebase Admin
 initializeApp();
@@ -57,6 +58,7 @@ export const submitApp = onRequest(async (req, res) => {
       ratingSum: 0,
       ratingCount: 0,
       commentCount: 0,
+      active: true,
       submittedBy: decodedToken.uid,
       submittedByName: decodedToken.name || "Anonymous",
       submittedByPhoto: decodedToken.picture || "",
@@ -115,5 +117,78 @@ export const getApps = onRequest(async (req, res) => {
   } catch (error) {
     console.error("Error fetching apps:", error);
     res.status(500).json({ error: 'An error occurred while fetching apps.' });
+  }
+});
+
+/**
+ * Scheduled function to check URL activity daily.
+ * Runs every day at 2 AM UTC.
+ */
+export const checkUrlActivity = onSchedule("0 2 * * *", async (event) => {
+  console.log("Starting daily URL activity check");
+
+  try {
+    // Query all apps with websiteUrl
+    const appsSnapshot = await db.collection("apps")
+      .where("websiteUrl", "!=", "")
+      .get();
+
+    const updates = [];
+
+    for (const doc of appsSnapshot.docs) {
+      const app = doc.data();
+      const url = app.websiteUrl;
+
+      if (!url) continue;
+
+      try {
+        // Check if URL is active
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+        const response = await fetch(url, {
+          method: 'HEAD', // Use HEAD to avoid downloading content
+          signal: controller.signal,
+        });
+
+        clearTimeout(timeoutId);
+        const isActive = response.ok; // status 200-299
+
+        // If the app is currently active but URL is not, mark as inactive
+        // If URL is active, ensure app is marked active
+        if (app.active !== isActive) {
+          updates.push({
+            docRef: doc.ref,
+            active: isActive,
+            updatedAt: FieldValue.serverTimestamp(),
+          });
+        }
+      } catch (error) {
+        console.log(`Error checking URL ${url}:`, error.message);
+        // If fetch fails, mark as inactive
+        if (app.active !== false) {
+          updates.push({
+            docRef: doc.ref,
+            active: false,
+            updatedAt: FieldValue.serverTimestamp(),
+          });
+        }
+      }
+    }
+
+    // Batch update all changes
+    if (updates.length > 0) {
+      const batch = db.batch();
+      updates.forEach(({ docRef, active, updatedAt }) => {
+        batch.update(docRef, { active, updatedAt });
+      });
+      await batch.commit();
+      console.log(`Updated ${updates.length} apps`);
+    } else {
+      console.log("No updates needed");
+    }
+
+  } catch (error) {
+    console.error("Error in checkUrlActivity:", error);
   }
 });

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import StarRating from './StarRating';
 import { HiOutlineExternalLink, HiOutlineChatAlt2 } from 'react-icons/hi';
@@ -19,9 +20,20 @@ const PRICING_BADGE = {
 };
 
 export default function AppCard({ app }) {
+  const [imgError, setImgError] = useState(false);
   const avgRating = app.ratingCount > 0 ? app.ratingSum / app.ratingCount : 0;
   const categoryColor = CATEGORY_COLORS[app.category] || CATEGORY_COLORS.Other;
   const pricingColor = PRICING_BADGE[app.pricing] || PRICING_BADGE.Paid;
+
+  // Add protocol if missing
+  const getFullUrl = (url) => {
+    if (!url) return '';
+    return url.startsWith('http') ? url : `https://${url}`;
+  };
+
+  const previewUrl = app.websiteUrl 
+    ? `https://api.microlink.io/?url=${encodeURIComponent(getFullUrl(app.websiteUrl))}&screenshot=true&embed=screenshot.url&viewport.width=1280&viewport.height=800&meta=false`
+    : null;
 
   return (
     <Link
@@ -40,21 +52,20 @@ export default function AppCard({ app }) {
           </div>
         </div>
 
-        {app.websiteUrl ? (
+        {previewUrl && !imgError ? (
           <img
-            src={`https://api.microlink.io/?url=${encodeURIComponent(app.websiteUrl)}&screenshot=true&embed=screenshot.url&viewport.width=1280&viewport.height=800`}
+            src={previewUrl}
             alt={`${app.name} preview`}
             className="w-full h-full object-cover object-top opacity-50 group-hover:opacity-100 transition-opacity duration-700 ease-in-out scale-100 group-hover:scale-105"
             loading="lazy"
-            onError={(e) => {
-              e.target.style.display = 'none';
-              e.target.nextSibling.style.display = 'flex';
-            }}
+            onError={() => setImgError(true)}
           />
-        ) : null}
-        <div className="absolute inset-0 flex items-center justify-center text-gray-800 hidden">
-           <HiOutlineExternalLink size={40} />
-        </div>
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center text-gray-800/50">
+             <HiOutlineExternalLink size={40} />
+          </div>
+        )}
+        
         <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent opacity-100 group-hover:opacity-40 transition-opacity" />
       </div>
 

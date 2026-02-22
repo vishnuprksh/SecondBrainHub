@@ -46,6 +46,7 @@ export default function AppDetailPage() {
   const [submittingComment, setSubmittingComment] = useState(false);
   const [userRating, setUserRating] = useState(0);
   const [editModal, setEditModal] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
   // Fetch app
   useEffect(() => {
@@ -233,6 +234,16 @@ export default function AppDetailPage() {
   const avgRating = app.ratingCount > 0 ? app.ratingSum / app.ratingCount : 0;
   const categoryColor = CATEGORY_COLORS[app.category] || CATEGORY_COLORS.Other;
 
+  // Add protocol if missing
+  const getFullUrl = (url) => {
+    if (!url) return '';
+    return url.startsWith('http') ? url : `https://${url}`;
+  };
+
+  const previewUrl = app.websiteUrl 
+    ? `https://api.microlink.io/?url=${encodeURIComponent(getFullUrl(app.websiteUrl))}&screenshot=true&embed=screenshot.url&viewport.width=1920&viewport.height=1080&meta=false`
+    : null;
+
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8">
       <EditAppModal
@@ -262,19 +273,20 @@ export default function AppDetailPage() {
               <div className="w-3 h-3 rounded-full bg-emerald-500/50" />
             </div>
             <div className="flex-1 max-w-md mx-4 bg-gray-950/50 border border-gray-700/50 rounded-lg px-3 py-1 text-xs text-gray-400 truncate text-center">
-              {app.websiteUrl ? app.websiteUrl.replace('https://', '') : 'No URL provided'}
+              {app.websiteUrl ? app.websiteUrl.replace('https://', '').replace('http://', '') : 'No URL provided'}
             </div>
             <div className="w-16" /> {/* Spacer */}
           </div>
 
           {/* Screenshot preview */}
           <div className="aspect-video bg-gray-950 relative">
-            {app.websiteUrl ? (
+            {previewUrl && !imgError ? (
               <img
-                src={`https://api.microlink.io/?url=${encodeURIComponent(app.websiteUrl)}&screenshot=true&embed=screenshot.url&viewport.width=1920&viewport.height=1080`}
+                src={previewUrl}
                 alt={`${app.name} preview`}
                 className="w-full h-full object-cover object-top"
                 loading="eager"
+                onError={() => setImgError(true)}
               />
             ) : (
               <div className="absolute inset-0 flex items-center justify-center text-gray-700">
