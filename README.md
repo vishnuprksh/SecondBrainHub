@@ -1,4 +1,4 @@
-# SecondBrainHub
+# FindYourSecondBrain
 
 A community-driven directory of second brain and personal knowledge management apps. Discover, rate, and review tools like Obsidian, Notion, Logseq, and more.
 
