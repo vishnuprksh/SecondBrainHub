@@ -16,12 +16,14 @@ import {
 import { db } from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
 import AuthModal from '../components/AuthModal';
+import EditAppModal from '../components/EditAppModal';
 import StarRating from '../components/StarRating';
 import {
   HiOutlineExternalLink,
   HiOutlineArrowLeft,
   HiOutlineChatAlt2,
   HiOutlineTrash,
+  HiOutlinePencil,
 } from 'react-icons/hi';
 import toast from 'react-hot-toast';
 
@@ -45,6 +47,7 @@ export default function AppDetailPage() {
   const [submittingComment, setSubmittingComment] = useState(false);
   const [userRating, setUserRating] = useState(0);
   const [authModal, setAuthModal] = useState({ open: false, message: '' });
+  const [editModal, setEditModal] = useState(false);
 
   // Fetch app
   useEffect(() => {
@@ -181,6 +184,18 @@ export default function AppDetailPage() {
     }
   };
 
+  const handleEditUpdated = (updatedApp) => {
+    setApp(updatedApp);
+  };
+
+  const handleEditClick = () => {
+    if (!user) {
+      setAuthModal({ open: true, message: 'Sign in with Google to edit this app.' });
+      return;
+    }
+    setEditModal(true);
+  };
+
   const handleDeleteComment = async (commentId) => {
     if (!confirm('Delete this comment?')) return;
     try {
@@ -240,6 +255,12 @@ export default function AppDetailPage() {
         onClose={() => setAuthModal({ open: false, message: '' })}
         message={authModal.message}
       />
+      <EditAppModal
+        app={app}
+        isOpen={editModal}
+        onClose={() => setEditModal(false)}
+        onUpdated={handleEditUpdated}
+      />
 
       {/* Back */}
       <Link
@@ -271,7 +292,19 @@ export default function AppDetailPage() {
           </div>
 
           <div className="min-w-0 flex-1">
-            <h1 className="text-2xl font-extrabold text-gray-900">{app.name}</h1>
+            <div className="flex items-start justify-between gap-3">
+              <h1 className="text-2xl font-extrabold text-gray-900">{app.name}</h1>
+              {user?.uid === app.submittedBy && (
+                <button
+                  onClick={handleEditClick}
+                  className="shrink-0 flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-brand-600 hover:bg-brand-50 px-3 py-1.5 rounded-lg border border-gray-200 hover:border-brand-300 transition-colors"
+                  title="Edit this app"
+                >
+                  <HiOutlinePencil size={15} />
+                  Edit
+                </button>
+              )}
+            </div>
             <div className="flex flex-wrap items-center gap-3 mt-2">
               <div className="flex items-center gap-2">
                 <StarRating rating={avgRating} size={20} />
@@ -310,6 +343,20 @@ export default function AppDetailPage() {
             </span>
           )}
         </div>
+
+        {/* Tags */}
+        {app.tags && app.tags.length > 0 && (
+          <div className="mt-5 flex flex-wrap gap-2">
+            {app.tags.map((tag) => (
+              <span
+                key={tag}
+                className="text-xs font-medium px-2.5 py-1 rounded-full bg-brand-100 text-brand-700"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Rate this app */}

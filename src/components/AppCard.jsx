@@ -74,6 +74,19 @@ export default function AppCard({ app }) {
           <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${pricingColor}`}>
             {app.pricing}
           </span>
+          {app.tags && app.tags.slice(0, 3).map((tag) => (
+            <span
+              key={tag}
+              className="text-xs font-medium px-2.5 py-1 rounded-full bg-brand-50 text-brand-600 border border-brand-100"
+            >
+              {tag}
+            </span>
+          ))}
+          {app.tags && app.tags.length > 3 && (
+            <span className="text-xs text-gray-400 font-medium">
+              +{app.tags.length - 3} more
+            </span>
+          )}
         </div>
 
         {/* Footer */}
